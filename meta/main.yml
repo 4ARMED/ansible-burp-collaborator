@@ -1,6 +1,6 @@
 galaxy_info:
-  author: Marc Wickenden
-  description: Burp Collaborator Server
+  author: "Marc Wickenden"
+  description: "Burp Collaborator Server"
   company: "4ARMED Limited"
   license: "license (BSD, MIT)"
   min_ansible_version: 2.2

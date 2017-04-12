@@ -1,5 +1,4 @@
 ---
-burp_hostname: collaborator
 burp_http_port: 80
 burp_https_port: 443
 burp_dns_port: 53

@@ -11,7 +11,6 @@ Installs [Burp Collaborator Server](https://portswigger.net/burp/) on a Ubuntu 1
 ## Role Variables
 
 `
-burp_hostname: collaborator
 burp_http_port: 80
 burp_https_port: 443
 burp_dns_port: 53
@@ -20,6 +19,9 @@ burp_whitelist: '["127.0.0.1"]'
 burp_key: burp.pk8
 burp_cert: burp.crt
 burp_ca_bundle: intermediate.crt
+burp_server_domain: collaborator.example.com
+burp_local_address: <internal IP address>
+burp_public_address: <public IP address> # May be the same as above
 `
 
 If you would like Ansible to generate you a self-signed cert for use with Collaborator complete the following, otherwise set `generate_self_signed_certs` to `false`.
@@ -31,8 +33,6 @@ state: London
 locality: London
 organisation: 4ARMED
 organisational_unit: Training
-burp_local_address: <internal IP address>
-burp_public_address: <public IP address> # May be the same as above
 `
 
 ## Dependencies
@@ -42,9 +42,20 @@ burp_public_address: <public IP address> # May be the same as above
 ## Example Playbook
 
 ```
-    - hosts: servers
-      roles:
-         - { role: 4ARMED.burp-collaborator, server_hostname: collaborator, burp_server_domain: collaborator.example.com, burp_local_address: 172.31.1.2, burp_public_address: 193.123.x.x  }
+---
+- hosts: all
+  become: yes
+  gather_facts: False
+  vars:
+    - burp_server_domain: collaborator.example.com
+    - burp_local_address: 138.68.191.190
+    - burp_public_address: 138.68.191.190
+  pre_tasks:
+    - name: Burp | Install Python 2
+      raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+
+  roles:
+    - { role: 4ARMED.burp-collaborator }
 ```
 
 ### License

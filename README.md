@@ -31,7 +31,6 @@ state: London
 locality: London
 organisation: 4ARMED
 organisational_unit: Training
-burp_server_domain: collaborator.4armed.net # set this to your host/domain name
 burp_local_address: <internal IP address>
 burp_public_address: <public IP address> # May be the same as above
 `

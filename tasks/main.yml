@@ -7,30 +7,40 @@
   become: no
   delegate_to: 127.0.0.1
   register: existing_key
+  tags:
+    - tls
 
 - name: Check for existing PKCS8 private key
   stat: path={{ burp_key }}
   become: no
   delegate_to: 127.0.0.1
   register: existing_pkcs8_key
+  tags:
+    - tls
 
 - name: Check for existing CSR
   stat: path=burp.csr
   become: no
   delegate_to: 127.0.0.1
   register: existing_csr
+  tags:
+    - tls
 
 - name: Check for existing certificate
   stat: path={{ burp_cert }}
   become: no
   delegate_to: 127.0.0.1
   register: existing_cert
+  tags:
+    - tls
 
 - name: Check for existing intermediate certificate
   stat: path={{ burp_ca_bundle }}
   become: no
   delegate_to: 127.0.0.1
   register: existing_ca_bundle
+  tags:
+    - tls
 
 - name: Generate private key
   command: openssl genrsa -out burp.key 2048

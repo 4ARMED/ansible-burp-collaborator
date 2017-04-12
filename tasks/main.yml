@@ -4,21 +4,25 @@
 # overwriting an active key/cert.
 - name: Check for existing private key
   stat: path=tls/burp.key
+  become: no
   delegate_to: 127.0.0.1
   register: existing_key
 
 - name: Check for existing PKCS8 private key
   stat: path=tls/{{ burp_key }}
+  become: no
   delegate_to: 127.0.0.1
   register: existing_pkcs8_key
 
 - name: Check for existing CSR
   stat: path=tls/burp.csr
+  become: no
   delegate_to: 127.0.0.1
   register: existing_csr
 
 - name: Check for existing certificate
   stat: path=tls/{{ burp_cert }}
+  become: no
   delegate_to: 127.0.0.1
   register: existing_cert
 

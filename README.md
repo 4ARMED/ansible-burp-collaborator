@@ -44,7 +44,7 @@ burp_public_address: <public IP address> # May be the same as above
 ```
     - hosts: servers
       roles:
-         - { role: 4ARMED.burp-collaborator }
+         - { role: 4ARMED.burp-collaborator, server_hostname: collaborator, burp_server_domain: collaborator.example.com, burp_local_address: 172.31.1.2, burp_public_address: 193.123.x.x  }
 ```
 
 ### License

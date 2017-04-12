@@ -3,31 +3,37 @@
 # I decided it was safer to just abort if there are rather than risk
 # overwriting an active key/cert.
 - name: Check for existing private key
-  stat: path=tls/burp.key
+  stat: path=burp.key
   become: no
   delegate_to: 127.0.0.1
   register: existing_key
 
 - name: Check for existing PKCS8 private key
-  stat: path=tls/{{ burp_key }}
+  stat: path={{ burp_key }}
   become: no
   delegate_to: 127.0.0.1
   register: existing_pkcs8_key
 
 - name: Check for existing CSR
-  stat: path=tls/burp.csr
+  stat: path=burp.csr
   become: no
   delegate_to: 127.0.0.1
   register: existing_csr
 
 - name: Check for existing certificate
-  stat: path=tls/{{ burp_cert }}
+  stat: path={{ burp_cert }}
   become: no
   delegate_to: 127.0.0.1
   register: existing_cert
 
+- name: Check for existing intermediate certificate
+  stat: path={{ burp_ca_bundle }}
+  become: no
+  delegate_to: 127.0.0.1
+  register: existing_ca_bundle
+
 - name: Generate private key
-  command: openssl genrsa -out tls/burp.key 2048
+  command: openssl genrsa -out burp.key 2048
   delegate_to: 127.0.0.1
   become: no
   when:
@@ -37,7 +43,7 @@
     - tls
 
 - name: Convert RSA private key to PKCS8
-  command: openssl pkcs8 -topk8 -inform PEM -in tls/burp.key -outform PEM -out tls/{{ burp_key }} -nocrypt
+  command: openssl pkcs8 -topk8 -inform PEM -in burp.key -outform PEM -out {{ burp_key }} -nocrypt
   delegate_to: 127.0.0.1
   become: no
   when:
@@ -47,7 +53,7 @@
     - tls
 
 - name: Generate CSR
-  command: openssl req -new -key tls/burp.key -out tls/burp.csr -subj "/C={{ country }}/ST={{ state }}/L={{ locality }}/O={{ organisation }}/OU={{ organisational_unit }}/CN=*.{{ burp_server_domain }}"
+  command: openssl req -new -key burp.key -out burp.csr -subj "/C={{ country }}/ST={{ state }}/L={{ locality }}/O={{ organisation }}/OU={{ organisational_unit }}/CN=*.{{ burp_server_domain }}"
   delegate_to: 127.0.0.1
   become: no
   when:
@@ -56,8 +62,17 @@
   tags:
     - tls
 
+- name: Create empty intermediate CA cert
+  command: touch {{ burp_ca_bundle }}
+  delegate_to: 127.0.0.1
+  become: no
+  when:
+    - not existing_ca_bundle.stat.exists
+  tags:
+    - tls
+
 - name: Generate self-signed certificate
-  command: openssl x509 -req -sha256 -days 365 -in tls/burp.csr -signkey tls/burp.key -out tls/{{ burp_cert }}
+  command: openssl x509 -req -sha256 -days 365 -in burp.csr -signkey burp.key -out {{ burp_cert }}
   delegate_to: 127.0.0.1
   become: no
   when:
@@ -86,17 +101,17 @@
     - setup
 
 - name: Copy over server key
-  copy: src=tls/{{ burp_key }} dest=/etc/burp/burp.pk8
+  copy: src={{ burp_key }} dest=/etc/burp/burp.pk8
   tags:
     - setup
 
 - name: Copy over server cert
-  copy: src=tls/{{ burp_cert }} dest=/etc/burp/burp.crt
+  copy: src={{ burp_cert }} dest=/etc/burp/burp.crt
   tags:
     - setup
 
 - name: Copy over CA bundle certificates
-  copy: src=tls/{{ burp_ca_bundle }} dest=/etc/burp/intermediate.crt
+  copy: src={{ burp_ca_bundle }} dest=/etc/burp/intermediate.crt
   tags:
     - setup
 

@@ -1,6 +1,6 @@
-# Java 8 JRE
+# Burp Collaborator Server Ansible Role
 
-Installs Java8 JRE on a Debian-based Linux host.
+Installs [Burp Collaborator Server](https://portswigger.net/burp/) on a Ubuntu 16.04 Linux host.
 
 ## Requirements
 

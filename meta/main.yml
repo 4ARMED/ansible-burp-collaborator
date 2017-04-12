@@ -1,0 +1,19 @@
+galaxy_info:
+  author: Marc Wickenden
+  description: Burp Collaborator Server
+  company: 4ARMED Limited
+  license: "license (BSD, MIT)"
+  min_ansible_version: 2.2
+  platforms:
+  - name: Ubuntu
+    versions:
+    - 16.04
+
+  galaxy_tags: []
+    - burp
+    - security
+    - testing
+    - java
+
+dependencies:
+  - 4ARMED.java8

@@ -67,10 +67,10 @@
   delegate_to: 127.0.0.1
   become: no
   when:
-    - generate_self_signed_certs
     - not existing_csr.stat.exists
   tags:
     - tls
+    - csr
 
 - name: Create empty intermediate CA cert
   command: touch {{ burp_ca_bundle }}
